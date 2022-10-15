@@ -1,18 +1,14 @@
 import os
 import time
 
+from Classification import Classification
+
 import torch
 import torch.utils.data
 import torchvision
-from PIL import Image
 from pycocotools.coco import COCO
 import numpy as np
-import json
-import glob
-import pandas as pd
 import os
-import ast
-import albumentations
 import albumentations.pytorch
 
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
@@ -22,56 +18,7 @@ from sahi.utils.file import save_json
 from PIL import Image
 import re
 
-import cv2 as cv2
-from matplotlib import image
-from matplotlib import pyplot as plt
-
-BOX_COLOR1 = (255, 0, 0)  # Red
-BOX_COLOR2 = (0, 0, 255)  # Blue
-TEXT_COLOR = (255, 255, 255)  # White
-
-# Classification
-cl_1 = 100
-d = {"good": [], "bad": []}
-
-def visualize_bbox(name, img, bbox, thickness=2):
-    """Visualizes a single bounding box on the image"""
-    x_min, y_min, x_max, y_max = bbox
-    x_min, x_max, y_min, y_max = int(x_min), int(x_max), int(y_min), int(y_max)
-    size = max(x_max - x_min, y_max - y_min)
-    if size < cl_1:
-        color = BOX_COLOR1
-        text = "GOOD"
-    else:
-        color = BOX_COLOR2
-        text = "BAD"
-
-
-    cv2.rectangle(img, (x_min, y_min), (x_max, y_max), color=color, thickness=thickness)
-
-    ((text_width, text_height), _) = cv2.getTextSize("Stone", cv2.FONT_HERSHEY_SIMPLEX, 0.35, 1)
-    cv2.rectangle(img, (x_min, y_min - int(1.3 * text_height)), (x_min + text_width, y_min), color, -1)
-
-    cv2.putText(
-        img,
-        text=text,
-        org=(x_min, y_min - int(0.3 * text_height)),
-        fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-        fontScale=0.35,
-        color=TEXT_COLOR,
-        lineType=cv2.LINE_AA,
-    )
-
-    cv2.imwrite('results/result_'+ name +'_.jpg', img)
-
-
-def drawBBox(name, path, bboxes):
-    bboxes = bboxes.cpu().detach().numpy().tolist()
-    img = cv2.imread(path)
-    print("Визуализируем", name)
-
-    for bbox in bboxes:
-        visualize_bbox(name, img, bbox)
+from Visualization import drawBBox
 
 
 class myOwnDataset(torch.utils.data.Dataset):
@@ -237,15 +184,33 @@ def checkAndSaveTestCocoJson(submission_path, test_dir_path, threshold, data_loa
                 x_min, x_max, y_min, y_max = int(x_min), int(x_max), int(y_min), int(y_max)
                 print(x_min, x_max, y_min, y_max)
                 size = max(x_max-x_min, y_max-y_min)
-                if size < cl_1:
-                    d["good"].append(size)
-                else:
-                    d["bad"].append(size)
+                rec = 720 / ((y_max + y_min) / 2) * size
+
+                # if rec < cl_1:
+                #     d1["good"].append(rec)
+                # else:
+                #     d1["bad"].append(rec)
+                #
+                # if rec > 250:
+                #     d["#1"].append(rec)
+                # elif rec > 150 & rec <= 250:
+                #     d["#2"].append(rec)
+                # elif rec > 100 & rec <= 150:
+                #     d["#3"].append(rec)
+                # elif rec > 80 & rec <= 100:
+                #     d["#4"].append(rec)
+                # elif rec > 70 & rec <= 80:
+                #     d["#5"].append(rec)
+                # elif rec > 40 & rec <= 70:
+                #     d["#6"].append(rec)
+                # elif rec > 0 & rec <= 40:
+                #     d["#7"].append(rec)
 
 
 
             try:
-                drawBBox(file_name.split('.')[0], test_dir_path+file_name, boxes)
+                drawBBox(file_name.split('.')[0], test_dir_path+file_name, boxes, 0)
+                drawBBox(file_name.split('.')[0], test_dir_path + file_name, boxes, 1)
             except Exception as e:
                 print("ОШИБОЧКА", e)
                 quit()
@@ -330,13 +295,10 @@ if __name__ == '__main__':
     #num_epochs = 1
     #teach(num_epochs)
 
-
     # ТЕСТ 1 (раскомментировать чтобы прогнать тест)
     threshold = 0.99
     submission_path = "content/test.json"
     dir_path = "content/dataset_lite/train/"
     checkAndSaveTestCocoJson(submission_path, dir_path, threshold, data_loader_test)
-    print("Answer is: ", d)
-
-
-
+    print("Answer is: ", Classification.types_7)
+    print("Answer2 is: ", Classification.overall_classification)
