@@ -181,15 +181,6 @@ def checkAndSaveTestCocoJson(submission_path, test_dir_path, threshold, data_loa
 
             coco_image = CocoImage(file_name=file_name, height=1080, width=1920, id=image_id)
 
-            # ХЗ че за строки если img не используется
-            # img = imgs[counter % train_batch_size].cpu().detach().numpy()
-            # img = ((img - img.min()) * (1 / (img.max() - img.min()) * 255)).astype('uint8')
-
-#CLASSIFICATION, NEGABARIT, MAXIMUM !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-            # print(time.time(), time.time() - start_time)
-            # if (time.time() - start_time > 2):
-
             print("CLASSIFICATION\n")
             print("current time", datetime.datetime.now().strftime("%H:%M:%S"))
             print("Answer is: ", Classification.type_classes)
@@ -237,6 +228,96 @@ def checkAndSaveTestCocoJson(submission_path, test_dir_path, threshold, data_loa
             counter += 1
     save_json(data=coco.json, save_path=submission_path)
     print("Результат сохранен. Тест закончен")
+    
+
+def checkModel(submission_path, video_dir_path):
+    coco = Coco()
+    coco.add_category(CocoCategory(id=0, name='stone0'))
+    coco.add_category(CocoCategory(id=1, name='stone1'))
+
+    # counter = 0
+    # model.eval()
+    # i = 0
+    # len_dataloader = len(video_data_loader)
+    # arr = []
+    # for i in range(len_dir?):
+    #     arri = []
+    #     for _ in range(train_batch_size):
+    #         img = Image.open(os.path.join(video_dir_path, path?))
+    #         arri.append(img)
+    #     
+    #     arr.append(arri)
+
+    # print("начинаем прогон на тестовом датасете длиной", len_dataloader)
+    
+    # for imgs in arr:
+    #     i += 1
+    #     imgs = list(img.to(device) for img in imgs)
+    # 
+    #     print("начало прогона в нейронке")
+    #     preds = model(imgs)   # model([1, 2, 3, 4])
+    #     print("конец прогона  в нейронке")
+    # 
+    #     print(f'Iteration: {i}/{len_dataloader}')
+    # 
+    #     for batch_item in preds:
+    #         boxes = batch_item['boxes']
+    #         # file_name = paths[counter % train_batch_size]
+    #         # image_id = int(re.findall(r'\d+', file_name)[0])
+    # 
+    #         file_name = ""
+    #         image_id =0
+    #         
+    #         print("для картинки", image_id, "(", file_name, ")")
+    # 
+    #         coco_image = CocoImage(file_name=file_name, height=1080, width=1920, id=image_id)
+    #         
+    #         print("CLASSIFICATION\n")
+    #         print("current time", datetime.datetime.now().strftime("%H:%M:%S"))
+    #         print("Answer is: ", Classification.type_classes)
+    #         print("Answer2 is: ", Classification.size_classes)
+    #         print("Ans max stone:", Classification.max_size)
+    # 
+    #         for k in Classification.size_classes.keys():
+    #             if Classification.size_classes[k]["sum"] > 0:
+    #                 print(f"current mean for {k}", "{:.1f}".format(100 * (Classification.size_classes[k]["sum"] /
+    #                                                                       Classification.size_classes[k]["sum"])), "mm")
+    # 
+    #         total_count = 0
+    #         for k in Classification.type_classes.keys():
+    #             total_count += Classification.type_classes[k]["count"]
+    # 
+    #         for k in Classification.type_classes.keys():
+    #             if total_count > 0:
+    #                 print("", "{:.1f}".format(100 * (Classification.type_classes[k]['count'] / total_count)), "%")
+    # 
+    #         print("\n")
+    # 
+    #         try:
+    #             draw_and_count_box(file_name.split('.')[0], test_dir_path + file_name, boxes, 0)
+    #             draw_and_count_box(file_name.split('.')[0], test_dir_path + file_name, boxes, 1)
+    #         except Exception as e:
+    #             print("ОШИБОЧКА", e)
+    #             quit()
+    # 
+    #         for box in boxes:
+    #             # width, height = Image.open(test_dir_path + file_name).size
+    #             x_min = box[0].item()
+    #             y_min = box[1].item()
+    #             width = box[2].item() - x_min
+    #             height = box[3].item() - y_min
+    #             coco_image.add_annotation(
+    #                 CocoAnnotation(
+    #                     bbox=[x_min, y_min, width, height],
+    #                     category_id=1,
+    #                     category_name='stone1',
+    #                     image_id=image_id
+    #                 )
+    #             )
+    #         coco.add_image(coco_image)
+    #         counter += 1
+    # save_json(data=coco.json, save_path=submission_path)
+    # print("Результат сохранен. Тест закончен")
 
 
 if __name__ == '__main__':
@@ -304,5 +385,27 @@ if __name__ == '__main__':
     submission_path = "content/test.json"
     dir_path = "content/dataset_lite/train/"
     checkAndSaveTestCocoJson(submission_path, dir_path, threshold, data_loader_test)
+
+
+    # ОСНОВНОЙ ТЕСТ
+    # видео по кадрам
+    data_dir = 'content/video/train/'
+    test_coco = 'content/dataset_lite/annot_local/test_annotation.json'
+
+    # my_dataset = myOwnImgs(root=test_data_dir,
+    #                               
+    #                               )
+    
+
+    data_loader = torch.utils.data.DataLoader(my_dataset,
+                                                batch_size=train_batch_size,
+                                                shuffle=False,
+                                                num_workers=4,
+                                                collate_fn=collate_fn)
+    
+    submission_path = "content/result.json"
+    checkModel(submission_path, data_dir)
+
+
 
 
