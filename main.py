@@ -230,7 +230,7 @@ def checkAndSaveTestCocoJson(submission_path, test_dir_path, threshold, data_loa
             # ХЗ че за строки если img не используется
             img = imgs[counter % train_batch_size].cpu().detach().numpy()
             img = ((img - img.min()) * (1 / (img.max() - img.min()) * 255)).astype('uint8')
-#CLASSIFICATION, NEGABARIT, MAXIMUM !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#CLASSIFICATION, NEGABARIT, MAXIMUM !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
             for box in boxes:
                 x_min, y_min, x_max, y_max = box
