@@ -18,7 +18,17 @@ class Classification:
     type_classes = {"#1": [], "#2": [], "#3": [], "#4": [], "#5": [], "#6": [], "#7": []}
 
     size_limit = 100  # Негабарит
-    size_classes = {"GOOD": [], "BAD": []}
+    size_classes = {
+
+        "GOOD": {
+            "count": 0,
+            "sum": 0
+        },
+        "BAD": {
+            "count": 0,
+            "sum": 0
+        }
+    }
 
     max_size = 0
 
@@ -35,7 +45,8 @@ def make_type_good_or_bad(size):
         text = "BAD"
         text_color = Classification.TEXT_COLOR_WHITE
 
-    Classification.size_classes[text].append(size)
+    Classification.size_classes[text]["count"] += 1
+    Classification.size_classes[text]["sum"] += size
 
     return color, text, text_color
 

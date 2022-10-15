@@ -2,16 +2,16 @@ import cv2 as cv2
 from Classification import *
 
 
-def drawBBox(name, path, bboxes, c_type):
+def draw_and_count_box(name, path, bboxes, c_type):
     bboxes = bboxes.cpu().detach().numpy().tolist()
     img = cv2.imread(path)
     print("Визуализируем", name)
 
     for bbox in bboxes:
-        visualize_bbox(name, img, bbox, c_type)
+        operate_bbox(name, img, bbox, c_type)
 
 
-def visualize_bbox(name, img, bbox, c_type):  # c_type = 0 - types, 1 - good/bad
+def operate_bbox(name, img, bbox, c_type):  # c_type = 0 - types, 1 - good/bad
     """Visualizes a single bounding box on the image"""
     x_min, y_min, x_max, y_max = bbox
     x_min, x_max, y_min, y_max = int(x_min), int(x_max), int(y_min), int(y_max)
@@ -20,6 +20,8 @@ def visualize_bbox(name, img, bbox, c_type):  # c_type = 0 - types, 1 - good/bad
 
     print(size, rec * size)
     size = int(rec * size)
+
+    update_max_size(size)
 
     if c_type:
         color, text, text_color = make_type_class(size)

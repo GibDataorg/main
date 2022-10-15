@@ -18,7 +18,7 @@ from sahi.utils.file import save_json
 from PIL import Image
 import re
 
-from Visualization import drawBBox
+from Visualization import draw_and_count_box
 
 
 class myOwnDataset(torch.utils.data.Dataset):
@@ -74,6 +74,7 @@ class myOwnDataset(torch.utils.data.Dataset):
 
         # Iscrowd
         iscrowd = torch.zeros((num_objs,), dtype=torch.int64)
+
 
         # Annotation is in dictionary format
         my_annotation = {"boxes": boxes, "labels": labels, "image_id": img_id, "area": areas, "iscrowd": iscrowd}
@@ -152,11 +153,17 @@ def checkAndSaveTestCocoJson(submission_path, test_dir_path, threshold, data_loa
     i = 0
     len_dataloader = len(data_loader)
 
+
+
     print("начинаем прогон на тестовом датасете длиной", len_dataloader)
     for imgs, annotations, paths in data_loader:
         i += 1
         imgs = list(img.to(device) for img in imgs)
+
+        print("начало прогона в нейронке")
         preds = model(imgs)
+        print("конец прогона в нейронке")
+
         print(f'Iteration: {i}/{len_dataloader}')
 
         for batch_item in preds:
@@ -179,23 +186,40 @@ def checkAndSaveTestCocoJson(submission_path, test_dir_path, threshold, data_loa
             img = ((img - img.min()) * (1 / (img.max() - img.min()) * 255)).astype('uint8')
 #CLASSIFICATION, NEGABARIT, MAXIMUM !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-            for box in boxes:
-                x_min, y_min, x_max, y_max = box
-                x_min, x_max, y_min, y_max = int(x_min), int(x_max), int(y_min), int(y_max)
-                print(x_min, x_max, y_min, y_max)
-                size = max(x_max-x_min, y_max-y_min)
-                rec = 720 / ((y_max + y_min) / 2) * size
+            # print(time.time(), time.time() - start_time)
+            # if (time.time() - start_time > 2):
 
+            print("CLASSIFICATION\n")
+            print("current time", datetime.datetime.now().strftime("%H:%M:%S"))
+            print("Answer is: ", Classification.type_classes)
+            print("Answer2 is: ", Classification.size_classes)
+            print("Ans max stone:", Classification.max_size)
+
+            for k in Classification.size_classes.keys():
+                if Classification.size_classes[k]["sum"] > 0:
+                    print(f"current mean for {k}", "{:.1f}".format(100 * (Classification.size_classes[k]["sum"] /
+                          Classification.size_classes[k]["sum"])), "mm")
+
+            total_count = 0
+            for k in Classification.type_classes.keys():
+                total_count += Classification.type_classes[k]["count"]
+
+
+            for k in Classification.type_classes.keys():
+                if total_count > 0:
+                    print("", "{:.1f}".format(100 * (Classification.type_classes[k]['count'] / total_count)), "%")
+
+            print("\n")
 
             try:
-                drawBBox(file_name.split('.')[0], test_dir_path+file_name, boxes, 0)
-                drawBBox(file_name.split('.')[0], test_dir_path + file_name, boxes, 1)
+                draw_and_count_box(file_name.split('.')[0], test_dir_path+file_name, boxes, 0)
+                draw_and_count_box(file_name.split('.')[0], test_dir_path + file_name, boxes, 1)
             except Exception as e:
                 print("ОШИБОЧКА", e)
                 quit()
 
             for box in boxes:
-                width, height = Image.open(test_dir_path + file_name).size
+                # width, height = Image.open(test_dir_path + file_name).size
                 x_min = box[0].item()
                 y_min = box[1].item()
                 width = box[2].item() - x_min
@@ -279,5 +303,5 @@ if __name__ == '__main__':
     submission_path = "content/test.json"
     dir_path = "content/dataset_lite/train/"
     checkAndSaveTestCocoJson(submission_path, dir_path, threshold, data_loader_test)
-    print("Answer is: ", Classification.type_classes)
-    print("Answer2 is: ", Classification.size_classes)
+
+
