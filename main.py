@@ -1,4 +1,4 @@
-import os
+import datetime
 import time
 
 from Classification import Classification
@@ -182,8 +182,9 @@ def checkAndSaveTestCocoJson(submission_path, test_dir_path, threshold, data_loa
             coco_image = CocoImage(file_name=file_name, height=1080, width=1920, id=image_id)
 
             # ХЗ че за строки если img не используется
-            img = imgs[counter % train_batch_size].cpu().detach().numpy()
-            img = ((img - img.min()) * (1 / (img.max() - img.min()) * 255)).astype('uint8')
+            # img = imgs[counter % train_batch_size].cpu().detach().numpy()
+            # img = ((img - img.min()) * (1 / (img.max() - img.min()) * 255)).astype('uint8')
+
 #CLASSIFICATION, NEGABARIT, MAXIMUM !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
             # print(time.time(), time.time() - start_time)

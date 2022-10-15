@@ -1,5 +1,4 @@
 class Classification:
-
     BOX_COLOR1 = (0, 0, 139)  # DarkRed
     BOX_COLOR2 = (255, 0, 255)  # Fuchsia
     BOX_COLOR3 = (133, 21, 199)  # MediumVioletRed
@@ -15,7 +14,36 @@ class Classification:
     TEXT_COLOR_WHITE = (255, 255, 255)
 
     # Classification
-    type_classes = {"#1": [], "#2": [], "#3": [], "#4": [], "#5": [], "#6": [], "#7": []}
+    type_classes = {
+        "#1": {
+            "count": 0,
+            "sum": 0
+        },
+        "#2": {
+            "count": 0,
+            "sum": 0
+        },
+        "#3": {
+            "count": 0,
+            "sum": 0
+        },
+        "#4": {
+            "count": 0,
+            "sum": 0
+        },
+        "#5": {
+            "count": 0,
+            "sum": 0
+        },
+        "#6": {
+            "count": 0,
+            "sum": 0
+        },
+        "#7": {
+            "count": 0,
+            "sum": 0
+        }
+    }
 
     size_limit = 100  # Негабарит
     size_classes = {
@@ -87,8 +115,10 @@ def make_type_class(size):
         text = "#1"
         text_color = Classification.TEXT_COLOR_WHITE
 
-    Classification.type_classes[text].append(size)
-    return color, text + " | "+str(size), text_color
+    Classification.type_classes[text]["count"] += 1
+    Classification.type_classes[text]["sum"] += size
+
+    return color, text + " | " + str(size), text_color
 
 
 def update_max_size(size):

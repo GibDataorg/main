@@ -30,7 +30,7 @@ def operate_bbox(name, img, bbox, c_type):  # c_type = 0 - types, 1 - good/bad
 
     cv2.rectangle(img, (x_min, y_min), (x_max, y_max), color=color, thickness=2)
 
-    ((text_width, text_height), _) = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)
+    ((text_width, text_height), _) = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, 0.45, 1)
     cv2.rectangle(img, (x_min, y_min - int(1.5 * text_height)), (x_min + text_width, y_min), color, -1)
 
     cv2.putText(
