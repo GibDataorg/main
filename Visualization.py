@@ -1,5 +1,5 @@
 import cv2 as cv2
-from Classification import get_good_or_bad_type, get_type, Classification
+from Classification import *
 
 
 def drawBBox(name, path, bboxes, c_type):
@@ -10,22 +10,26 @@ def drawBBox(name, path, bboxes, c_type):
     for bbox in bboxes:
         visualize_bbox(name, img, bbox, c_type)
 
-def visualize_bbox(name, img, bbox, c_type):
+
+def visualize_bbox(name, img, bbox, c_type):  # c_type = 0 - types, 1 - good/bad
     """Visualizes a single bounding box on the image"""
     x_min, y_min, x_max, y_max = bbox
     x_min, x_max, y_min, y_max = int(x_min), int(x_max), int(y_min), int(y_max)
-    size = max(x_max - x_min, y_max - y_min)
-    rec = 720 // ((y_max + y_min) // 2) * size
+    size = max(x_max-x_min, y_max-y_min)
+    rec = (720 / ((y_min + y_max) / 2))
+
+    print(size, rec * size)
+    size = int(rec * size)
 
     if c_type:
-        color, text = get_good_or_bad_type(rec)
+        color, text, text_color = make_type_class(size)
     else:
-        color, text = get_type(rec)
+        color, text, text_color = make_type_good_or_bad(size)
 
     cv2.rectangle(img, (x_min, y_min), (x_max, y_max), color=color, thickness=2)
 
-    ((text_width, text_height), _) = cv2.getTextSize("Stone", cv2.FONT_HERSHEY_SIMPLEX, 0.35, 1)
-    cv2.rectangle(img, (x_min, y_min - int(1.3 * text_height)), (x_min + text_width, y_min), color, -1)
+    ((text_width, text_height), _) = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)
+    cv2.rectangle(img, (x_min, y_min - int(1.5 * text_height)), (x_min + text_width, y_min), color, -1)
 
     cv2.putText(
         img,
@@ -33,7 +37,7 @@ def visualize_bbox(name, img, bbox, c_type):
         org=(x_min, y_min - int(0.3 * text_height)),
         fontFace=cv2.FONT_HERSHEY_SIMPLEX,
         fontScale=0.35,
-        color=Classification.TEXT_COLOR,
+        color=text_color,
         lineType=cv2.LINE_AA,
     )
 

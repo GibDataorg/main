@@ -186,27 +186,6 @@ def checkAndSaveTestCocoJson(submission_path, test_dir_path, threshold, data_loa
                 size = max(x_max-x_min, y_max-y_min)
                 rec = 720 / ((y_max + y_min) / 2) * size
 
-                # if rec < cl_1:
-                #     d1["good"].append(rec)
-                # else:
-                #     d1["bad"].append(rec)
-                #
-                # if rec > 250:
-                #     d["#1"].append(rec)
-                # elif rec > 150 & rec <= 250:
-                #     d["#2"].append(rec)
-                # elif rec > 100 & rec <= 150:
-                #     d["#3"].append(rec)
-                # elif rec > 80 & rec <= 100:
-                #     d["#4"].append(rec)
-                # elif rec > 70 & rec <= 80:
-                #     d["#5"].append(rec)
-                # elif rec > 40 & rec <= 70:
-                #     d["#6"].append(rec)
-                # elif rec > 0 & rec <= 40:
-                #     d["#7"].append(rec)
-
-
 
             try:
                 drawBBox(file_name.split('.')[0], test_dir_path+file_name, boxes, 0)
@@ -256,7 +235,7 @@ if __name__ == '__main__':
     data_loader = torch.utils.data.DataLoader(my_dataset,
                                               batch_size=train_batch_size,
                                               shuffle=True,
-                                              num_workers=5,
+                                              num_workers=4,
                                               collate_fn=collate_fn)
 
     # Локальный тестовый датасет
@@ -300,5 +279,5 @@ if __name__ == '__main__':
     submission_path = "content/test.json"
     dir_path = "content/dataset_lite/train/"
     checkAndSaveTestCocoJson(submission_path, dir_path, threshold, data_loader_test)
-    print("Answer is: ", Classification.types_7)
-    print("Answer2 is: ", Classification.overall_classification)
+    print("Answer is: ", Classification.type_classes)
+    print("Answer2 is: ", Classification.size_classes)
